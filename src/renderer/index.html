@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:;">
+  <title>나이스 입력 도우미</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <h1>나이스 입력 도우미</h1>
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="input" role="tab" aria-selected="true">자동입력</button>
+      <button class="tab" data-tab="mask" role="tab" aria-selected="false">일람표 마스킹</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 자동입력 -->
+    <section id="panel-input" class="panel">
+      <div class="card">
+        <div class="card-head">
+          <h2>1. 입력할 내용 불러오기</h2>
+          <div class="row-gap">
+            <button id="btn-clip" class="btn primary">클립보드에서 불러오기</button>
+            <button id="btn-clear" class="btn ghost">비우기</button>
+          </div>
+        </div>
+        <p class="hint">엑셀이나 한셀에서 입력할 <b>열 하나</b>를 학생 순서대로 복사한 뒤 위 버튼을 누르세요. 아래 칸에 직접 붙여넣어도 돼요.</p>
+        <textarea id="paste" rows="3" placeholder="여기에 붙여넣기 (Ctrl+V)"></textarea>
+
+        <div class="list-head">
+          <span id="summary">불러온 내용이 없어요.</span>
+          <label class="inline">글자 수 한도
+            <select id="limit">
+              <option value="0">표시 안 함</option>
+              <option value="300">300바이트 (100자)</option>
+              <option value="500">500바이트</option>
+              <option value="1000">1000바이트</option>
+              <option value="1500" selected>1500바이트 (500자)</option>
+              <option value="3000">3000바이트 (1000자)</option>
+            </select>
+          </label>
+        </div>
+        <div class="list-wrap">
+          <table id="rows">
+            <thead><tr><th class="c-no">번호</th><th>내용</th><th class="c-bytes">바이트</th><th class="c-skip" title="붙여넣지 않고 넘어갈 줄 (전출 학생 등)">건너뛰기</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>2. 입력 설정</h2>
+        <div class="grid">
+          <label>붙여넣은 뒤 Tab 횟수
+            <input id="tabs" type="number" min="0" max="20" value="1">
+          </label>
+          <label>건너뛰기 줄의 Tab 횟수
+            <input id="skiptabs" type="number" min="0" max="20" value="0">
+            <small>나이스에 그 학생 칸이 없으면 0</small>
+          </label>
+          <label>시작 전 대기 (초)
+            <input id="countdown" type="number" min="0" max="30" value="5">
+          </label>
+          <label>시작 번호
+            <input id="startno" type="number" min="1" value="1">
+          </label>
+          <label class="span2">속도 <b id="speed-name">보통</b>
+            <input id="speed" type="range" min="1" max="5" value="3">
+          </label>
+        </div>
+      </div>
+
+      <div class="card run">
+        <ol class="howto">
+          <li>시작을 누른 뒤 대기 시간 안에 나이스 화면의 <b>첫 번째 입력칸</b>을 클릭하세요.</li>
+          <li>입력이 진행되는 동안 마우스와 키보드를 만지지 마세요.</li>
+          <li>멈추려면 언제든 <kbd>F8</kbd>을 누르세요.</li>
+        </ol>
+        <div class="row-gap">
+          <button id="btn-start" class="btn primary big">시작</button>
+          <button id="btn-stop" class="btn danger big" disabled>멈춤 (F8)</button>
+        </div>
+        <div id="status" class="status" aria-live="polite">준비됐어요.</div>
+        <div class="progress"><div id="bar"></div></div>
+      </div>
+    </section>
+
+    <!-- 마스킹 -->
+    <section id="panel-mask" class="panel" hidden>
+      <div class="card">
+        <h2>성적 일람표 마스킹</h2>
+        <p class="hint">학생 이름과 학교명을 ○로 가린 사본을 만들어요. 원본 파일은 바뀌지 않고, 원본 옆 <b>마스킹결과</b> 폴더에 저장돼요. 모든 처리는 이 PC 안에서만 이루어져요.</p>
+        <div id="drop" class="drop" tabindex="0">
+          <p><b>xlsx · hwpx · hwp</b> 파일을 여기로 끌어다 놓거나</p>
+          <button id="btn-pick" class="btn primary">파일 선택</button>
+        </div>
+        <div class="grid">
+          <label>이름 가리는 방식
+            <select id="namestyle">
+              <option value="all">○○○ (전체)</option>
+              <option value="keep-first">김○○ (성 남기기)</option>
+            </select>
+          </label>
+          <div class="checks">
+            <label class="inline"><input id="mask-school" type="checkbox" checked> 학교명 가리기</label>
+            <label class="inline"><input id="mask-class" type="checkbox"> 학년·반 숫자 가리기</label>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>결과</h2>
+        <div id="mask-status" class="status">파일을 선택하면 바로 처리해요.</div>
+        <ul id="mask-results" class="results"></ul>
+      </div>
+    </section>
+  </main>
+
+  <script src="../shared/text.js"></script>
+  <script src="app.js"></script>
+  <script src="mask.js"></script>
+</body>
+</html>

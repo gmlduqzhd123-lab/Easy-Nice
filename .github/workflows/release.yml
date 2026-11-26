@@ -1,0 +1,35 @@
+# v1.0.1 같은 태그를 올리면 Windows 설치 파일을 만들어 GitHub Releases 에 올린다.
+# 설치된 앱은 이 Releases 를 보고 자동 업데이트한다.
+name: Release installer
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: 태그와 package.json 버전 확인
+        shell: bash
+        run: |
+          v=$(node -p "require('./package.json').version")
+          if [ "v$v" != "$GITHUB_REF_NAME" ]; then
+            echo "태그($GITHUB_REF_NAME)와 package.json 버전(v$v)이 달라요."; exit 1
+          fi
+      - name: 저장소 설정 확인
+        shell: bash
+        run: node -e "const r=require('./repo.config.json'); if(!r.owner||!r.repo){console.error('repo.config.json 의 owner/repo 를 채워 주세요.');process.exit(1)}"
+      - run: npm ci
+      - run: npm test
+      - run: npm run release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,27 @@
+{
+  "name": "neis-input-helper",
+  "productName": "나이스 입력 도우미",
+  "version": "1.0.0",
+  "description": "나이스 자동입력 + 성적 일람표 마스킹",
+  "main": "src/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "build:keys": "node scripts/build-keys.js",
+    "build:web": "node scripts/build-web.js",
+    "test": "node --test \"test/*.test.js\"",
+    "dist": "node scripts/build-keys.js && electron-builder --win --config electron-builder.config.js --publish never",
+    "release": "node scripts/build-keys.js && electron-builder --win --config electron-builder.config.js --publish always"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.11",
+    "jszip": "^3.10.2"
+  },
+  "devDependencies": {
+    "buffer": "^6.0.3",
+    "electron": "^45.5.0",
+    "electron-builder": "^26.18.0",
+    "esbuild": "^0.28.2",
+    "pako": "^3.0.3"
+  }
+}

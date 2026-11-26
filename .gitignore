@@ -1,0 +1,5 @@
+node_modules/
+dist/
+site/
+test/.web-core.cjs
+native/keysender.exe

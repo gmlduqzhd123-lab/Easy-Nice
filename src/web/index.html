@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- connect-src 'none': 이 페이지는 어떤 서버로도 데이터를 보낼 수 없다. 파일은 브라우저 안에서만 처리된다. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta name="description" content="성적 일람표의 학생 이름·학교명을 브라우저 안에서 가리고, 나이스 자동입력 프로그램을 내려받는 곳">
+  <title>나이스 입력 도우미</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-repo-ready="{{REPO_READY}}">
+  <header class="top">
+    <div class="wrap top-in">
+      <span class="brand">나이스 입력 도우미</span>
+      <nav class="links">
+        <a href="#mask">일람표 마스킹</a>
+        <a href="#download">자동입력 프로그램</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>성적 일람표 가리기와<br>나이스 자동입력</h1>
+      <p>학생 이름과 학교명을 ○로 가린 일람표를 이 페이지에서 바로 만들 수 있어요. 파일은 인터넷으로 보내지 않고 이 브라우저 안에서만 처리돼요.</p>
+      <div class="hero-cards">
+        <a class="hero-card" href="#mask">
+          <b>일람표 마스킹</b>
+          <span>xlsx · hwpx · hwp 파일을 끌어다 놓으면 바로 처리</span>
+        </a>
+        <a class="hero-card" href="#download">
+          <b>자동입력 프로그램</b>
+          <span>엑셀 내용을 나이스 입력칸에 차례로 붙여넣기 (Windows)</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- 마스킹 -->
+    <section id="mask" class="card">
+      <h2>일람표 마스킹</h2>
+      <p class="hint">"성명"이나 "이름" 열에 있는 학생 이름을 문서 전체에서 ○로 바꿔요. 학교명, "담임: ○○○" 같은 교사 이름, 작성자 정보, 미리보기도 함께 정리해요. 원본 파일은 바뀌지 않아요.</p>
+
+      <div id="drop" class="drop" tabindex="0" role="button" aria-label="파일 선택">
+        <p><b>xlsx · hwpx · hwp</b> 파일을 여기로 끌어다 놓거나</p>
+        <label class="btn primary">파일 선택<input id="file" type="file" accept=".xlsx,.hwpx,.hwp" multiple hidden></label>
+      </div>
+
+      <div class="options">
+        <label>이름 가리는 방식
+          <select id="namestyle">
+            <option value="all">○○○ (전체)</option>
+            <option value="keep-first">김○○ (성 남기기)</option>
+          </select>
+        </label>
+        <label class="inline"><input id="mask-school" type="checkbox" checked> 학교명 가리기</label>
+        <label class="inline"><input id="mask-class" type="checkbox"> 학년·반 숫자 가리기</label>
+      </div>
+
+      <div id="status" class="status" aria-live="polite">파일을 고르면 바로 처리해요.</div>
+      <ul id="results" class="results"></ul>
+      <div class="row-gap"><button id="zip-all" class="btn" hidden>모두 한 번에 받기 (zip)</button></div>
+      <p class="fine">🔒 이 페이지는 보안 정책(CSP)으로 외부 전송이 막혀 있어서, 파일이 어디로도 업로드되지 않아요. 그래도 공유하기 전에 결과 파일을 꼭 직접 열어 확인하세요. 문서 안 그림 속 글자와 엑셀 시트 이름은 바꾸지 않아요.</p>
+    </section>
+
+    <!-- 다운로드 -->
+    <section id="download" class="card">
+      <h2>자동입력 프로그램 <small>v{{VERSION}} · Windows 10/11</small></h2>
+      <p class="hint">다른 창에 키를 대신 눌러 주는 기능은 브라우저에서 할 수 없어서, 자동입력은 설치형 프로그램으로 제공해요. 설치한 프로그램에서도 마스킹을 쓸 수 있고, 새 버전이 나오면 자동으로 업데이트돼요.</p>
+      <div class="row-gap">
+        <a id="dl" class="btn primary big" href="{{DOWNLOAD_URL}}">설치 파일 받기</a>
+        <a id="rel" class="btn ghost" href="{{RELEASES_URL}}" rel="noopener">모든 버전 보기</a>
+      </div>
+      <p id="dl-pending" class="status warn" hidden>아직 배포 주소가 설정되지 않았어요.</p>
+
+      <div class="steps">
+        <div>
+          <h3>설치</h3>
+          <ol>
+            <li>받은 <code>neis-input-helper-setup.exe</code>를 실행해요.</li>
+            <li>"Windows의 PC 보호" 창이 뜨면 <b>추가 정보 → 실행</b>을 눌러요. (코드 서명이 없는 프로그램이라 뜨는 안내예요)</li>
+          </ol>
+        </div>
+        <div>
+          <h3>사용</h3>
+          <ol>
+            <li>엑셀에서 입력할 <b>열 하나</b>를 학생 순서대로 복사 → <b>클립보드에서 불러오기</b></li>
+            <li>전출 학생처럼 넘어갈 줄은 <b>건너뛰기</b> 체크</li>
+            <li><b>시작</b> → 대기 시간 안에 나이스의 첫 입력칸 클릭</li>
+            <li>멈추려면 <kbd>F8</kbd>. 멈춘 번호부터 이어서 할 수 있어요.</li>
+          </ol>
+        </div>
+      </div>
+      <p class="fine">입력이 끝나면 나이스에서 저장하기 전에 내용을 꼭 확인하세요.</p>
+    </section>
+  </main>
+
+  <footer class="wrap foot">나이스 입력 도우미 v{{VERSION}} · 나이스(NEIS)와 관련 없는 개인 제작 도구예요.</footer>
+  <script src="assets/app.js"></script>
+</body>
+</html>
