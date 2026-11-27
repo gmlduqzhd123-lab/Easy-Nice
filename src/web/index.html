@@ -4,9 +4,23 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- connect-src 'none': 이 페이지는 어떤 서버로도 데이터를 보낼 수 없다. 파일은 브라우저 안에서만 처리된다. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none'; manifest-src 'self'; worker-src 'self'">
   <meta name="description" content="성적 일람표의 학생 이름·학교명을 브라우저 안에서 가리고, 나이스 자동입력 프로그램을 내려받는 곳">
   <title>나이스 입력 도우미</title>
+  <meta name="theme-color" content="#2563eb">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="나이스 입력 도우미">
+  <meta property="og:description" content="성적 일람표의 학생 이름·학교명을 브라우저 안에서 가리고, 엑셀 내용을 나이스에 차례로 붙여넣는 프로그램을 받는 곳">
+  <meta property="og:url" content="https://gmlduqzhd123-lab.github.io/Easy-Nice/">
+  <meta property="og:image" content="https://gmlduqzhd123-lab.github.io/Easy-Nice/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://gmlduqzhd123-lab.github.io/Easy-Nice/og-image.jpg">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/favicon-32.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="나이스 도우미">
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body data-repo-ready="{{REPO_READY}}">
@@ -17,6 +31,10 @@
         <a href="#mask">일람표 마스킹</a>
         <a href="#download">자동입력 프로그램</a>
       </nav>
+      <div class="ys-actions">
+        <button type="button" class="ys-btn" id="ys-install" data-ys-install>📲 <span class="ys-wide">앱 </span>설치</button>
+        <button type="button" class="ys-btn" id="ys-qr" data-qr aria-label="QR 코드로 접속">📱 QR</button>
+      </div>
     </div>
   </header>
 
@@ -95,7 +113,30 @@
     </section>
   </main>
 
-  <footer class="wrap foot">나이스 입력 도우미 v{{VERSION}} · 나이스(NEIS)와 관련 없는 개인 제작 도구예요.</footer>
+  <footer class="wrap foot">나이스 입력 도우미 v{{VERSION}} · 나이스(NEIS)와 관련 없는 개인 제작 도구예요.
+    <p class="ys-credit">© 2026 엽쌤. All rights reserved. · <a href="https://gmlduqzhd123-lab.github.io/YScode/">엽쌤의 다른 앱 보기 →</a></p>
+  </footer>
+
+  <!-- 앱 설치 안내 · QR (CSP 때문에 인라인 스타일·스크립트 없이 dialog + 정적 qr.svg) -->
+  <dialog id="ys-install-dialog" class="ys-dialog" aria-labelledby="ys-install-title">
+    <h2 id="ys-install-title">📲 앱으로 설치하기</h2>
+    <p id="ys-install-ready" hidden>아래 <b>설치</b>를 누르면 바탕화면·홈 화면에 아이콘이 생겨요.</p>
+    <ol id="ys-install-steps">
+      <li><b>iPhone·iPad (Safari)</b>: 아래쪽 공유 버튼 <b>⎋</b> → <b>홈 화면에 추가</b></li>
+      <li><b>안드로이드 (Chrome)</b>: 오른쪽 위 <b>⋮</b> → <b>앱 설치</b> 또는 <b>홈 화면에 추가</b></li>
+      <li><b>PC (Chrome·Edge)</b>: 주소창 오른쪽의 <b>설치 아이콘</b> 또는 메뉴 → <b>앱 설치</b></li>
+    </ol>
+    <div class="ys-dialog-actions">
+      <button type="button" class="btn primary" id="ys-install-go" hidden>설치</button>
+      <button type="button" class="btn" data-close>닫기</button>
+    </div>
+  </dialog>
+  <dialog id="ys-qr-dialog" class="ys-dialog" aria-labelledby="ys-qr-title">
+    <h2 id="ys-qr-title">📱 카메라로 찍어서 들어와요</h2>
+    <img class="ys-qr-img" src="qr.svg" width="240" height="240" alt="나이스 입력 도우미 QR 코드">
+    <p class="ys-qr-url">gmlduqzhd123-lab.github.io/Easy-Nice/</p>
+    <div class="ys-dialog-actions"><button type="button" class="btn" data-close>닫기</button></div>
+  </dialog>
   <script src="assets/app.js"></script>
 </body>
 </html>

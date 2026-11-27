@@ -53,6 +53,8 @@ async function main() {
     .replaceAll('{{REPO_READY}}', repoSet ? 'true' : 'false');
   fs.writeFileSync(path.join(out, 'index.html'), html);
   fs.copyFileSync(path.join(root, 'src/web/style.css'), path.join(out, 'assets', 'style.css'));
+  // 앱 설치·QR·공유 그림 (manifest, 서비스 워커, 아이콘, qr.svg, og-image.jpg)
+  fs.cpSync(path.join(root, 'src/web/pwa'), out, { recursive: true });
   // Jekyll 처리 끄기 (밑줄로 시작하는 파일 등을 그대로 배포)
   fs.writeFileSync(path.join(out, '.nojekyll'), '');
   console.log('built site/ (repo ' + (repoSet ? `${repo.owner}/${repo.repo}` : '미설정') + ')');
