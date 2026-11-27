@@ -1,0 +1,17 @@
+{
+  "id": "/Easy-Nice/",
+  "name": "나이스 입력 도우미",
+  "short_name": "나이스 도우미",
+  "description": "성적 일람표 마스킹과 나이스 자동입력 프로그램 안내",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f7f9",
+  "theme_color": "#2563eb",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

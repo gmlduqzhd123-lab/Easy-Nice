@@ -140,3 +140,36 @@ if (document.body.dataset.repoReady !== 'true') {
   }
   $('dl-pending').hidden = false;
 }
+
+// 엽쌤 앱 공통: 📲 앱 설치 · 📱 QR (CSP 때문에 공통 키트 대신 dialog로)
+(() => {
+  let installEvent = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    installEvent = e;
+  });
+  window.addEventListener('appinstalled', () => { installEvent = null; });
+  const open = (id) => { const d = $(id); if (d && !d.open) d.showModal(); };
+  for (const d of document.querySelectorAll('.ys-dialog')) {
+    d.addEventListener('click', (e) => { if (e.target === d || e.target.closest('[data-close]')) d.close(); });
+  }
+  $('ys-install').addEventListener('click', () => {
+    const ready = Boolean(installEvent);
+    $('ys-install-ready').hidden = !ready;
+    $('ys-install-go').hidden = !ready;
+    $('ys-install-steps').hidden = ready;
+    open('ys-install-dialog');
+  });
+  $('ys-install-go').addEventListener('click', async () => {
+    const e = installEvent;
+    if (!e) return;
+    installEvent = null;
+    $('ys-install-dialog').close();
+    e.prompt();
+    try { await e.userChoice; } catch (_) { /* 취소 */ }
+  });
+  $('ys-qr').addEventListener('click', () => open('ys-qr-dialog'));
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  }
+})();
